@@ -2,7 +2,9 @@
  * @module VeniaUI/Targets
  */
 const RichContentRendererList = require('./RichContentRendererList');
-const TargetableESModule = require('@magento/pwa-buildpack/lib/WebpackTools/transform/TargetableESModule');
+const {
+    TargetableReactComponent
+} = require('@magento/pwa-buildpack/lib/WebpackTools/transform');
 
 /**
  * TODO: This code intercepts the Webpack module for a specific file in this
@@ -61,24 +63,15 @@ module.exports = targets => {
                 routes: targets.own.routes.call([])
             }
         });
-        addTransform.addModule(
-            new TargetableESModule(
-                '@magento/venia-ui/lib/components/Main/main.js',
-                builtins.transformModules
-            ).transformAST({
-                JSXElement: {
-                    enter(path, state) {
-                        const { openingElement } = path.node;
-                        const elmId = openingElement && openingElement.name;
-                        if (elmId && elmId.name === 'Header') {
-                            path.insertBefore([
-                                babelTemplate.expression.ast('<h1>yo</h1>')
-                            ]);
-                        }
-                    }
-                }
-            })
+        const MainComponent = new TargetableReactComponent(
+            '@magento/venia-ui/lib/components/Main/main.js',
+            builtins.transformModules
         );
+        MainComponent.replaceJSXElement(
+            '<main className={rootClass}>',
+            `<main id="BLORPS" className={rootClass}>{{ORIGINAL.children}}</main>`
+        );
+        addTransform.addModule(MainComponent);
     });
 
     // The paths below are relative to packages/venia-ui/lib/components/Routes/routes.js.

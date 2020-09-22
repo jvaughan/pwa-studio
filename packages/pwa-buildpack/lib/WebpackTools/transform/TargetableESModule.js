@@ -5,12 +5,6 @@ const TargetableModule = require('./TargetableModule');
  * Modules in a semantic way.
  */
 class TargetableESModule extends TargetableModule {
-    wrapJSXElement(elementQuery, wrapperTemplate) {
-        return this._addModuleUtilityTransform('wrapJSXElement', {
-            elementQuery,
-            wrapperTemplate
-        });
-    }
     /**
      * Pass exports of this module through a [wrapper module](#wrapper_modules).
      *
@@ -19,14 +13,6 @@ class TargetableESModule extends TargetableModule {
      */
     wrapWithFile(name, wrapper) {
         return this._wrapWithFile(this._normalizeWrapParameters(name, wrapper));
-    }
-
-    _addModuleUtilityTransform(method, options) {
-        this.addTransform(
-            'babel',
-            '@magento/pwa-buildpack/lib/WebpackTools/plugins/BabelESModuleUtilitiesPlugin.js',
-            { method, options }
-        );
     }
 
     /** @ignore */
