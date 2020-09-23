@@ -15,17 +15,13 @@ class JSXDecoratorTemplate {
         this._originalString = templateString;
 
         this._propsByPlaceholder = new Map();
-        this._placeholderSet = new Set();
         for (const [placeholder, prop] of JSXPlaceholder.findIn(
             templateString
         )) {
             this._propsByPlaceholder.set(placeholder, prop);
-            this._placeholderSet.add(placeholder);
         }
         this._template = babelTemplate.expression(templateString, {
-            syntacticPlaceholders: false,
-            placeholderPattern: false,
-            placeholderWhitelist: this._placeholderSet,
+            syntacticPlaceholders: true,
             plugins: ['jsx']
         });
         this._renderCache = new WeakMap();
@@ -38,7 +34,7 @@ class JSXDecoratorTemplate {
                 placeholder,
                 prop
             ] of this._propsByPlaceholder.entries()) {
-                context[placeholder] =
+                context[prop] =
                     placeholder === JSXPlaceholder.forRoot
                         ? original
                         : original[prop];

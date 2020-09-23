@@ -44,7 +44,6 @@ module.exports = targets => {
         })
     );
 
-    const babelTemplate = require('@babel/template');
     /**
      * Implementation of our `routes` target. When Buildpack runs
      * `transformModules`, this interceptor will provide a nice API to
@@ -67,10 +66,36 @@ module.exports = targets => {
             '@magento/venia-ui/lib/components/Main/main.js',
             builtins.transformModules
         );
-        MainComponent.replaceJSXElement(
-            '<main className={rootClass}>',
-            `<main id="BLORPS" className={rootClass}>{{ORIGINAL.children}}</main>`
-        );
+        MainComponent.appendJSX(
+            'div className={pageClass}',
+            '<span>appendJSX succeeded!</span>'
+        )
+            .insertAfterJSX(
+                '<Footer/>',
+                '<article>insertAfterJSX succeeded!</article>'
+            )
+            .insertBeforeJSX(
+                '<Header />',
+                '<span>insertBeforeJSX succeeded!</span>'
+            )
+            .prependJSX('div', '<>prependJSX succeeded!</>')
+            .removeJSX('span className="busted"')
+            .replaceStartTag(
+                'main className={rootClass}',
+                'main id="BLORPS" className={rootClass}'
+            )
+            .setJSXProps('Footer', {
+                'aria-role': '"footer"',
+                'data-set-jsx-props-succeeded': true
+            })
+            .surroundJSX(
+                'Header',
+                `div style={{ filter: "blur(1px)", outline: "2px dashed red" }}`
+            )
+            .appendJSX(
+                'Footer aria-role="footer"',
+                '<span>Cumulative append worrrrrked</span>'
+            );
         addTransform.addModule(MainComponent);
     });
 

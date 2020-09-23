@@ -5,6 +5,29 @@ const TargetableESModule = require('./TargetableESModule');
  * components and the JSX in them, in a semantic way.
  */
 class TargetableReactComponent extends TargetableESModule {
+    appendJSX(element, child) {
+        return this._addJsxTransform('append', element, { jsx: child });
+    }
+
+    insertAfterJSX(element, sibling) {
+        return this._addJsxTransform('insertAfter', element, { jsx: sibling });
+    }
+
+    insertBeforeJSX(element, sibling) {
+        return this._addJsxTransform('insertBefore', element, { jsx: sibling });
+    }
+
+    prependJSX(element, child) {
+        return this._addJsxTransform('prepend', element, { jsx: child });
+    }
+
+    removeJSX(element, child) {
+        return this._addJsxTransform('remove', element);
+    }
+
+    removeJSXProps(element, props) {
+        return this._addJsxTransform('removeProps', element, { props });
+    }
     /**
      * Replace a JSX element with different code.
      *
@@ -15,9 +38,27 @@ class TargetableReactComponent extends TargetableESModule {
      * placeholder '%%original%%' to insert the original element in the
      * resulting code.
      */
-    replaceJSXElement(element, replacement) {
-        return this._addJsxTransform('replaceJSXElement', element, {
-            replacement
+    replaceJSX(element, replacement, options = {}) {
+        return this._addJsxTransform('replace', element, {
+            jsx: replacement,
+            ...options
+        });
+    }
+
+    replaceStartTag(element, replacement) {
+        return this.replaceJSX(element, replacement, {
+            targetPath: 'openingElement',
+            replacementPath: 'openingElement'
+        });
+    }
+
+    setJSXProps(element, props) {
+        return this._addJsxTransform('setProps', element, { props });
+    }
+
+    surroundJSX(element, wrapperElement) {
+        return this._addJsxTransform('surround', element, {
+            jsx: wrapperElement
         });
     }
 

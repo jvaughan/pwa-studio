@@ -1,14 +1,9 @@
-const delimiters = ['{{', '}}'];
+const delimiters = ['%%', '%%'];
 const delimit = str => delimiters[0] + str + delimiters[1];
-const rootIdent = 'ORIGINAL';
+const rootIdent = 'original';
 const rootPlaceholder = delimit(rootIdent);
-const forProperty = prop => delimit(rootIdent + '.' + prop);
+const placeholderRE = new RegExp(delimit('(.+)'), 'gm');
 
-const escapedDelimiters = delimiters.map(d => '\\' + d.split('').join('\\'));
-const placeholderRE = new RegExp(
-    `${escapedDelimiters[0]}${rootIdent}\\.(\\S*)\\s*${escapedDelimiters[1]}`,
-    'gm'
-);
 function* findIn(templateString) {
     let match;
     if (templateString.includes(rootPlaceholder)) {
@@ -21,6 +16,5 @@ function* findIn(templateString) {
 
 module.exports = {
     forRoot: rootPlaceholder,
-    forProperty,
     findIn
 };

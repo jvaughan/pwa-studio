@@ -19,7 +19,12 @@ const Main = props => {
     return (
         <main className={rootClass}>
             <Header />
-            <div className={pageClass}>{children}</div>
+            <div className={pageClass}>
+                {children}
+                <span onClick={() => {}} className="busted">
+                    removeJSX was unsuccessful
+                </span>
+            </div>
             <Footer />
         </main>
     );
